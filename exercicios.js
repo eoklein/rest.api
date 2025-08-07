@@ -1,59 +1,36 @@
-//esse arquivo contem o template para resolucao dos exercicios passados durante a explicação de DESESTRUTURAÇÃO DE OBJETOS
+import express from "express";
+
+//para todos os exercicios, considere a seguinte lista de objetos
 
 /*
-DICA: para imprimir o valor de alguma variavel dentro de uma frase, voce pode usar a seguinte sintaxe:
+Exercicio 1 - Limitando o numero de resultados
+Utilize a rota /usuarios, declarada a seguir, para a resolucao do exercicio
 
-`imprimindo valor da variavel x: ${variavel}`
+*considere que sera passado, via query param, um parametro chamado "limit"
+
+faça com que a resposta contenha apenas o numero de registros solicitado pelo usuario
+
+DICA: a funcao .slice(inicio, fim), "corta" a lista, retornando apenas os valores de um intervalo
 */
+const usuarios = [
+  { id: 1, nome: "João" },
+  { id: 2, nome: "Maria" },
+  { id: 3, nome: "Joana" },
+  { id: 4, nome: "Carlos" },
+];
 
-/*
-Exercicio 1
+const app = express();
+app.use(express.json());
 
-Voce tem o seguinte objeto
-
-const pessoa =  {
-    nome: "Joana",
-    idade: 21,
-    curso: "Engenharia"
-}
-
-Use desestruturação para criar as variáveis “nome” e “curso” e imprima a frase:
-“Joana está cursando engenharia”
-*/
-function exe01() {
-
-    const pessoa =  {
-        nome: "Joana",
-        idade: 21,
-        curso: "Engenharia",
-}
-
-    const { nome, idade, curso } = pessoa;
-    console.log(`${nome} está cursando ${curso}`);
-}
-
-/*
-Exercicio 2
-
-Crie uma função que recebe um objeto chamado “produto”, que terá a seguinte definição:
-
-const produto = {
-  nome: "Celular",
-  preco: 1500,
-  categoria: "eletronicos",
-};
-
-A função deve usar desestruturação para extrair os dados e retornar uma mensagem no seguinte formato:
-A desestruturação deve ser feita direta nos parâmetros da função
-
-“Produto: celular, Categoria: eletronico, preco: R$1500”
-*/
-function exe02(produto) {
-    produto = {
-        nome: "Celular",
-        preco: 1500,
-        categoria: "eletronicos",
-    };
-    const { nome, preco, categoria } = produto;
-    return`Produto: ${nome}, Categoria: ${categoria}, preco: R$${preco}`;
-}
+app.get("/usuarios", (req, res) => {
+  const limit = parseInt(req.query.limit);
+  
+    // Verifique se o parâmetro 'limit' é válido
+  if (!limit || isNaN(limit) || limit <= 0) {
+    return res.json(usuarios);
+  }
+    // Limite o número de usuários retornados
+  const limitedUsers = usuarios.slice(0, limit);
+  res.json(limitedUsers);
+});
+app.listen(3000);
